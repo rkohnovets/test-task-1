@@ -1,0 +1,8 @@
+﻿DROP TRIGGER IF EXISTS trigger_contractor_prevent_update ON "Contractors";
+DROP TRIGGER IF EXISTS trigger_contractor_set_updated_at ON "Contractors";
+
+DROP TRIGGER IF EXISTS trigger_contact_prevent_update ON "Contacts";
+DROP TRIGGER IF EXISTS trigger_contact_set_updated_at ON "Contacts";
+
+DROP FUNCTION IF EXISTS prevent_update_on_readonly_columns();
+DROP FUNCTION IF EXISTS set_updated_at();

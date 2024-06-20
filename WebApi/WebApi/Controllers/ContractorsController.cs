@@ -16,12 +16,14 @@ namespace YourNamespace.Controllers
             _context = context;
         }
 
+        // GET: api/Contractors
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Contractor>>> GetContractors()
         {
             return await _context.Contractors.Include(c => c.Contacts).ToListAsync();
         }
 
+        // GET: api/Contractors/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Contractor>> GetContractor(int id)
         {
@@ -35,6 +37,23 @@ namespace YourNamespace.Controllers
             return contractor;
         }
 
+        // GET: api/Contractors/5/contacts
+        [HttpGet("{contractorId}/contacts")]
+        public async Task<ActionResult<IEnumerable<Contact>>> GetContactsByContractor(int contractorId)
+        {
+            var contacts = await _context.Contacts
+                                         .Where(c => c.ContractorID == contractorId)
+                                         .ToListAsync();
+
+            if (!contacts.Any())
+            {
+                return NotFound();
+            }
+
+            return Ok(contacts);
+        }
+
+        // POST: api/Contractors
         [HttpPost]
         public async Task<ActionResult<Contractor>> PostContractor(Contractor contractor)
         {
@@ -44,6 +63,7 @@ namespace YourNamespace.Controllers
             return CreatedAtAction("GetContractor", new { id = contractor.ContractorID }, contractor);
         }
 
+        // PUT: api/Contractors/5
         [HttpPut("{id}")]
         public async Task<IActionResult> PutContractor(int id, Contractor contractor)
         {
@@ -73,6 +93,7 @@ namespace YourNamespace.Controllers
             return NoContent();
         }
 
+        // DELETE: api/Contractors/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteContractor(int id)
         {

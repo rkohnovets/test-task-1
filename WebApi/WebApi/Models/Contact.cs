@@ -5,20 +5,30 @@ namespace WebApi.Models;
 
 public class Contact
 {
+    [JsonPropertyName("contactID")]
     public int ContactID { get; set; }
 
     [Required]
+    [JsonPropertyName("fullName")]
     public string FullName { get; set; }
 
     [Required]
     [EmailAddress]
+    [JsonPropertyName("email")]
     public string Email { get; set; }
 
-    public int? ContractorID { get; set; }
+    [JsonPropertyName("contractorID")]
+    public int ContractorID { get; set; }
 
     [JsonIgnore]
-    public Contractor Contractor { get; set; }
+    [JsonPropertyName("createdAt")]
+    public DateTime CreatedAt { get; set; }
 
-    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
-    public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
+    [JsonIgnore]
+    [JsonPropertyName("updatedAt")]
+    public DateTime UpdatedAt { get; set; }
+
+    // без "?" не работает
+    [JsonIgnore]
+    public Contractor? Contractor { get; set; }
 }

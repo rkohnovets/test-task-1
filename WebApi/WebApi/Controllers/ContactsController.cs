@@ -19,6 +19,7 @@ namespace YourNamespace.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Contact>>> GetContacts()
         {
+            Console.WriteLine("GET all contacts");
             return await _context.Contacts.Include(c => c.Contractor).ToListAsync();
         }
 
@@ -45,14 +46,17 @@ namespace YourNamespace.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutContact(int id, Contact contact)
+        public async Task<IActionResult> PutContact(int id, [FromBody] Contact contact)
         {
-            if (id != contact.ContactID)
+            Console.WriteLine($"POST contact");
+            //Console.WriteLine($"POST contact {contact.ContactID}");
+
+            if (false) // (id != contact.ContactID)
             {
                 return BadRequest();
             }
 
-            _context.Entry(contact).State = EntityState.Modified;
+            //_context.Entry(contact).State = EntityState.Modified;
 
             try
             {

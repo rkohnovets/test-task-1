@@ -3,41 +3,40 @@
     <h2>Contacts</h2>
     <ul>
       <li v-for="contact in contacts" :key="contact.contactID">
-        {{ contact.fullName }} ({{ contact.email }})
+        {{ contact.name }} - {{ contact.email }}
+        <button @click="deleteContact(contact.contactID)">Delete</button>
         <button @click="editContact(contact)">Edit</button>
       </li>
     </ul>
-    <edit-contact v-if="editingContact" :contact="editingContact" @save="saveContact" @cancel="cancelEdit"/>
+    <add-contact :contractors="contractors" @contact-added="fetchContacts"></add-contact>
   </div>
 </template>
 
 <script>
-import EditContact from './EditContact.vue';
+import AddContact from './AddContact.vue';
 
 export default {
-  name: 'ContactList',
-  components: {
-    EditContact
-  },
   props: {
-    contacts: Array
+    contacts: Array,
+    contractors: Array
   },
-  data() {
-    return {
-      editingContact: null
-    }
+  components: {
+    AddContact
   },
   methods: {
+    async deleteContact(contactID) {
+      try {
+        await fetch(`http://localhost:5000/api/contacts/${contactID}`, {
+          method: 'DELETE'
+        });
+        this.$emit('contact-deleted');
+      } catch (error) {
+        console.error('Error deleting contact:', error);
+      }
+    },
     editContact(contact) {
-      this.editingContact = { ...contact };
-    },
-    saveContact(contact) {
-      this.$emit('save-contact', contact);
-      this.editingContact = null;
-    },
-    cancelEdit() {
-      this.editingContact = null;
+      this.$emit('edit-contact', contact);
     }
   }
-}
+};
 </script>

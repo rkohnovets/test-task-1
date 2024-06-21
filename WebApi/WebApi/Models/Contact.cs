@@ -1,32 +1,21 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
 
 namespace WebApi.Models;
 
-public class Contact
+public class Contact : BaseEntity
 {
-    [JsonPropertyName("contactID")]
+    [Key] [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public int ContactID { get; set; }
 
     [Required]
-    [JsonPropertyName("fullName")]
     public string FullName { get; set; }
 
-    [Required]
-    [EmailAddress]
-    [JsonPropertyName("email")]
+    [Required] [EmailAddress]
     public string Email { get; set; }
 
-    [JsonPropertyName("contractorID")]
     public int ContractorID { get; set; }
-
-    [JsonIgnore]
-    [JsonPropertyName("createdAt")]
-    public DateTime CreatedAt { get; set; }
-
-    [JsonIgnore]
-    [JsonPropertyName("updatedAt")]
-    public DateTime UpdatedAt { get; set; }
 
     // без "?" не работает
     [JsonIgnore]

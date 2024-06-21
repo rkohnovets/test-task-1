@@ -19,8 +19,8 @@ namespace WebApi.Migrations
                     ContractorID = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     ContractorName = table.Column<string>(type: "text", nullable: false),
-                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, defaultValueSql: "NOW()"),
-                    UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, defaultValueSql: "NOW()")
+                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -35,9 +35,9 @@ namespace WebApi.Migrations
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     FullName = table.Column<string>(type: "text", nullable: false),
                     Email = table.Column<string>(type: "text", nullable: false),
-                    ContractorID = table.Column<int>(type: "integer", nullable: true),
-                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, defaultValueSql: "NOW()"),
-                    UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, defaultValueSql: "NOW()")
+                    ContractorID = table.Column<int>(type: "integer", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -46,24 +46,19 @@ namespace WebApi.Migrations
                         name: "FK_Contacts_Contractors_ContractorID",
                         column: x => x.ContractorID,
                         principalTable: "Contractors",
-                        principalColumn: "ContractorID");
+                        principalColumn: "ContractorID",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
                 name: "IX_Contacts_ContractorID",
                 table: "Contacts",
                 column: "ContractorID");
-
-            // Выполнение SQL-скрипта для создания триггеров
-            migrationBuilder.Sql(File.ReadAllText("Migrations/Scripts/CreateTriggers.txt"));
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            // Выполнение SQL-скрипта для удаления триггеров
-            migrationBuilder.Sql(File.ReadAllText("Migrations/Scripts/DeleteTriggers.txt"));
-
             migrationBuilder.DropTable(
                 name: "Contacts");
 

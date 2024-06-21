@@ -48,15 +48,14 @@ namespace YourNamespace.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> PutContact(int id, [FromBody] Contact contact)
         {
-            Console.WriteLine($"POST contact");
-            //Console.WriteLine($"POST contact {contact.ContactID}");
+            Console.WriteLine($"POST contact {contact.ContactID}");
 
-            if (false) // (id != contact.ContactID)
+            if (id != contact.ContactID)
             {
                 return BadRequest();
             }
 
-            //_context.Entry(contact).State = EntityState.Modified;
+            _context.Entry(contact).State = EntityState.Modified;
 
             try
             {
@@ -74,7 +73,7 @@ namespace YourNamespace.Controllers
                 }
             }
 
-            return NoContent();
+            return Ok(contact);
         }
 
         [HttpDelete("{id}")]

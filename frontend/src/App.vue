@@ -1,8 +1,19 @@
 <template>
   <div id="app">
-    <ContractorList :contractors="contractors" @contractor-selected="fetchContacts"/>
-    <ContactList :contacts="contacts" @save-contact="updateContact"/>
-    <div v-if="errorMessage" class="error">{{ errorMessage }}</div>
+    <h1>Contractors and Contacts</h1>
+    <div class="container">
+      <div class="left-pane">
+        <contractor-list :contractors="contractors" @select-contractor="fetchContactsByContractor" />
+      </div>
+      <div class="right-pane">
+        <contact-list 
+          :contacts="contacts" 
+          :contractors="contractors"
+          @contact-deleted="fetchContacts"
+          @edit-contact="editContact" 
+        />
+      </div>
+    </div>
   </div>
 </template>
 
@@ -11,88 +22,52 @@ import ContractorList from './components/ContractorList.vue';
 import ContactList from './components/ContactList.vue';
 
 export default {
-  name: 'App',
-  components: {
-    ContractorList,
-    ContactList
-  },
   data() {
     return {
       contractors: [],
       contacts: [],
-      errorMessage: '' // Добавляем поле для ошибки
+      selectedContractorId: null,
+      editingContact: null
+    };
+  },
+  components: {
+    ContractorList,
+    ContactList
+  },
+  methods: {
+    async fetchContractors() {
+      const response = await fetch('http://localhost:5000/api/contractors');
+      this.contractors = await response.json();
+    },
+    async fetchContacts() {
+      const response = await fetch('http://localhost:5000/api/contacts');
+      this.contacts = await response.json();
+    },
+    async fetchContactsByContractor(contractorId) {
+      this.selectedContractorId = contractorId;
+      const response = await fetch(`http://localhost:5000/api/contractors/${contractorId}/contacts`);
+      this.contacts = await response.json();
+    },
+    editContact(contact) {
+      this.editingContact = contact;
+      // Здесь вы можете открыть модальное окно для редактирования контакта
     }
   },
   mounted() {
     this.fetchContractors();
-  },
-  methods: {
-    fetchContractors() {
-      fetch('http://localhost:5000/api/contractors')
-        .then(response => {
-          if (!response.ok) {
-            throw new Error(`HTTP error! Status: ${response.status}`);
-          }
-          return response.json();
-        })
-        .then(data => {
-          this.contractors = data;
-        })
-        .catch(error => {
-          console.error('Error fetching contractors:', error);
-          this.errorMessage = 'Error fetching contractors';
-        });
-    },
-    fetchContacts(contractor) {
-      fetch(`http://localhost:5000/api/contractors/${contractor.contractorID}/contacts`)
-        .then(response => {
-          if (!response.ok) {
-            throw new Error(`HTTP error! Status: ${response.status}`);
-          }
-          return response.json();
-        })
-        .then(data => {
-          this.contacts = data;
-        })
-        .catch(error => {
-          console.error('Error fetching contacts:', error);
-          this.errorMessage = 'Error fetching contacts';
-        });
-    },
-    updateContact(contact) {
-      console.log(contact)
-      fetch(`http://localhost:5000/api/contacts/${contact.contactID}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(contact)
-      })
-      .then(response => {
-        if (!response.ok) {
-          throw new Error(`HTTP error! Status: ${response.status}`);
-        }
-        return response.json();
-      })
-      .then(updatedContact => {
-        const index = this.contacts.findIndex(c => c.contactID === updatedContact.contactID);
-        this.$set(this.contacts, index, updatedContact);
-      })
-      .catch(error => {
-        console.error('Error updating contact:', error);
-        this.errorMessage = 'Error updating contact';
-      });
-    }
+    this.fetchContacts();
   }
-}
+};
 </script>
 
 <style>
-#error {
-  color: red;
-}
-#app {
+.container {
   display: flex;
-  justify-content: space-around;
+}
+.left-pane {
+  flex: 1;
+}
+.right-pane {
+  flex: 2;
 }
 </style>

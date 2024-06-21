@@ -21,21 +21,34 @@ public class ApplicationDbContext : DbContext
             .HasMany(c => c.Contacts)
             .WithOne(e => e.Contractor)
             .HasForeignKey(e => e.ContractorID);
+    }
 
-        modelBuilder.Entity<Contractor>()
-            .Property(c => c.CreatedAt)
-            .HasDefaultValueSql("NOW()");
+    public override int SaveChanges()
+    {
+        AddTimestamps();
+        return base.SaveChanges();
+    }
 
-        modelBuilder.Entity<Contractor>()
-            .Property(c => c.UpdatedAt)
-            .HasDefaultValueSql("NOW()");
+    public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+    {
+        AddTimestamps();
+        return await base.SaveChangesAsync(cancellationToken);
+    }
 
-        modelBuilder.Entity<Contact>()
-            .Property(c => c.CreatedAt)
-            .HasDefaultValueSql("NOW()");
+    private void AddTimestamps()
+    {
+        var entities = ChangeTracker.Entries()
+            .Where(x => x.Entity is BaseEntity && (x.State == EntityState.Added || x.State == EntityState.Modified));
 
-        modelBuilder.Entity<Contact>()
-            .Property(c => c.UpdatedAt)
-            .HasDefaultValueSql("NOW()");
+        foreach (var entity in entities)
+        {
+            var now = DateTime.UtcNow; // current datetime
+
+            if (entity.State == EntityState.Added)
+            {
+                ((BaseEntity)entity.Entity).CreatedAt = now;
+            }
+            ((BaseEntity)entity.Entity).UpdatedAt = now;
+        }
     }
 }

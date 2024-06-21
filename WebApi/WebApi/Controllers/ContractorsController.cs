@@ -45,11 +45,6 @@ namespace YourNamespace.Controllers
                                          .Where(c => c.ContractorID == contractorId)
                                          .ToListAsync();
 
-            if (!contacts.Any())
-            {
-                return NotFound();
-            }
-
             return Ok(contacts);
         }
 

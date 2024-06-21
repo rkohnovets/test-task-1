@@ -51,7 +51,7 @@ namespace WebApi.Migrations
 
                     b.HasIndex("ContractorID");
 
-                    b.ToTable("Contacts");
+                    b.ToTable("Contacts", (string)null);
                 });
 
             modelBuilder.Entity("WebApi.Models.Contractor", b =>
@@ -74,7 +74,7 @@ namespace WebApi.Migrations
 
                     b.HasKey("ContractorID");
 
-                    b.ToTable("Contractors");
+                    b.ToTable("Contractors", (string)null);
                 });
 
             modelBuilder.Entity("WebApi.Models.Contact", b =>

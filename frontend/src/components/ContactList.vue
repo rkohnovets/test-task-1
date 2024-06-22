@@ -2,7 +2,7 @@
   <div>
     <div class="headerDiv green">
       <h2>Contacts</h2>
-      <button v-if="!showAddForm" @click="addContact">Add Contact</button>
+      <button v-if="!showAddForm" @click="addContact">Add</button>
       <AddContact
         v-else
         :contractorId="props.contractorId"

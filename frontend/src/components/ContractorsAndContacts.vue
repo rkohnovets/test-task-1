@@ -1,9 +1,17 @@
 <template>
-  <loader-comp/>
   <div class="container">
     <div class="left-pane">
-      <h2>Contractors</h2>
-      <ul>
+      <div class="headerDiv">
+        <h2>Contractors</h2>
+        <button v-if="!showAddForm" @click="addContractor">Add</button>
+        <AddContractor
+          v-else
+          @contractorAdded="fetchContractors"
+          @cancel="cancelAdd"
+        />
+      </div>
+      <LoaderComp v-if="!contractors"/>
+      <ul v-else>
         <li v-for="contractor in contractors" :key="contractor.contractorID">
           <button @click="selectContractor(contractor)">
             {{ contractor.contractorName }}
@@ -25,9 +33,11 @@ import { ref, onMounted } from 'vue';
 import ContactList from './ContactList.vue';
 import LoaderComp from './LoaderComp.vue';
 import { API_BASE_URL } from '../apiConfig';
+import AddContractor from './AddContractor.vue';
 
-const contractors = ref([]);
+const contractors = ref(null);
 const selectedContractorId = ref(null);
+const showAddForm = ref(false);
 
 const selectContractor = (contractor) => {
     console.log(`selected contractor ${contractor.contractorID}`)
@@ -35,9 +45,17 @@ const selectContractor = (contractor) => {
 }
 
 const fetchContractors = async () => {
+  contractors.value = null;
   const response = await fetch(`${API_BASE_URL}/api/contractors`);
   contractors.value = await response.json();
 };
+
+const addContractor = () => {
+  showAddForm.value = true;
+}
+const cancelAdd = () => {
+  showAddForm.value = false;
+}
 
 onMounted(fetchContractors);
 </script>
@@ -54,5 +72,11 @@ onMounted(fetchContractors);
 }
 .right-pane {
   flex: 2;
+}
+.headerDiv {
+  display: flex;
+}
+.headerDiv h2 {
+  margin: 0px 15px 0px 0px;
 }
 </style>

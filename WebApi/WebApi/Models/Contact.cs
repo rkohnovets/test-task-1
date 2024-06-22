@@ -15,9 +15,9 @@ public class Contact : BaseEntity
     [Required] [EmailAddress]
     public string Email { get; set; }
 
+    [Required]
     public int ContractorID { get; set; }
 
-    // без "?" не работает
-    [JsonIgnore]
+    [JsonIgnore] // без "?" не работает, не сериализует
     public Contractor? Contractor { get; set; }
 }

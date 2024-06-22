@@ -14,5 +14,5 @@ public class Contractor : BaseEntity
     public string ContractorName { get; set; }
 
     [JsonIgnore]
-    public ICollection<Contact> Contacts { get; set; }
+    public ICollection<Contact>? Contacts { get; set; }
 }

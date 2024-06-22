@@ -6,11 +6,11 @@
         Contractor id: {{ props.contractorId }}
       </div>
       <div>
-        <label for="name">Name:</label>
+        <label>Name:</label>
         <input type="text" v-model="newContact.fullName" required />
       </div>
       <div>
-        <label for="email">Email:</label>
+        <label>Email:</label>
         <input type="email" v-model="newContact.email" required />
       </div>
       <button type="submit">Add Contact</button>
